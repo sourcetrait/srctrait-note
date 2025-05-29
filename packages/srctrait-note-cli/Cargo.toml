@@ -1,0 +1,26 @@
+[package]
+name = "srctrait-note-cli"
+version = "1.0.0"
+description = "Markdown notes manager"
+authors = ["SourceTrait <development@sourcetrait.com>"]
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/sourcetrait/srctrait-note"
+homepage = "https://sourcetrait.com"
+categories = ["command-line-utilities"]
+keywords = ["note", "markdown", "srctrait"]
+edition = "2024"
+
+[[bin]]
+name = "srctrait-note"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+dirs = "6"
+srctrait-note = { path = "../srctrait-note" }
+shellexpand = "3"
+srctrait-common-chronox.workspace = true
+
+[dev-dependencies]
+srctrait-common-testing.workspace = true

@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = [
+    "packages/srctrait-note",
+    "packages/srctrait-note-cli",
+]
+
+[workspace.dependencies]
+srctrait-common-testing = "4"
+srctrait-common-chronox = "1"

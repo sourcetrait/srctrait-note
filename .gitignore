@@ -1,0 +1,13 @@
+# Cargo
+/target
+/Cargo.lock
+
+# IDE
+.idea
+.vscode
+
+# Asmov
+.local
+
+# OS
+.DS_Store
