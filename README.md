@@ -22,7 +22,6 @@ Usage
 For help, see `srctrait-note --help`.
 
 `srctrait-note <command>`
-- `config` Edits the command's config file. Configures the notes dir and editor command.
 - `today` Edits today's note
   - `today from <date>` Carries over notes from the previous date into today's
 - `yesterday` Edits yesterday's note
@@ -31,6 +30,8 @@ For help, see `srctrait-note --help`.
 - `plan` Edits your master plan
 - `plan <topic>` Edits topical plan
 - `todo <topic>` Edits a topical TODO list
+- `config` Edits the command's config file. Configures the notes dir and editor command.
+- `pick <note type>` Uses [yazi](https://github.com/sxyazi/yazi) to choose a note to edit
 
 Installation
 --------------------------------------------------------------------------------
@@ -77,7 +78,7 @@ You should have received a [copy](./LICENSE-AGPL-3.txt) of the
 GNU Affero General Public License along with this program.
 If not, see https://www.gnu.org/licenses/.
 
-[Crate]: https://crates.io/crates/srctrait-note
-[Crate Badge]: https://img.shields.io/crates/v/srctrait-note.svg
+[Crate]: https://crates.io/crates/srctrait-note-cli
+[Crate Badge]: https://img.shields.io/crates/v/srctrait-note-cli.svg
 [License]: (#License-AGPL3)
 [License Badge]: https://img.shields.io/badge/license-AGPL3-blue.svg

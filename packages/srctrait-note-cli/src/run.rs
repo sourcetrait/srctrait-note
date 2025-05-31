@@ -1,4 +1,4 @@
-use std::{fs, process::ExitCode};
+use std::{borrow::Cow, fs, path::Path, process::ExitCode};
 use clap::Parser;
 use crate::*;
 
@@ -17,7 +17,7 @@ pub fn run() -> ExitCode {
 
 fn run_cli() -> anyhow::Result<()> {
     let cli = Cli::parse();
-    match &cli.command {
+    match cli.command {
         Command::Config => run_config(),
         Command::Today(cmd) => match &cmd.from {
             Some(TodaySubCommand::From{when}) => run_today_from(when),
@@ -27,7 +27,8 @@ fn run_cli() -> anyhow::Result<()> {
         Command::Day{when} => run_day(when),
         Command::Idea{topic} => run_idea(topic),
         Command::Todo{topic} => run_todo(topic),
-        Command::Plan{topic} => run_plan(topic.as_deref()),
+        Command::Plan{topic} => run_plan(topic),
+        Command::Pick{kind} => run_pick(kind),
     }
 }
 
@@ -71,8 +72,8 @@ fn run_config() -> anyhow::Result<()> {
 
 fn run_today() -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
-    let today = lib::Date::now();
-    let note_file = lib::note_for_date(notes_dir, today, None)?;
+    let note = lib::Note::new(lib::NoteType::Today(lib::Date::now()));
+    let note_file = lib::note_for_date(&notes_dir, &note, None)?;
     run_editor(&config, &note_file)
 }
 
@@ -80,43 +81,60 @@ fn run_today_from(when: &str) -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
     let today = lib::Date::now();
     let when = today.from(when)?;
-    let note_file = lib::note_for_date(notes_dir, today, Some(when))?;
+    let note = lib::Note::new(lib::NoteType::Today(today));
+    let note_file = lib::note_for_date(&notes_dir, &note, Some(when))?;
     run_editor(&config, &note_file)
 }
 
-fn run_day(when: &str) -> anyhow::Result<()> {
+fn run_day(when: String) -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
-    let day = lib::Date::now().from(&when)?;
-    let note_file = lib::note_for_date(notes_dir, day, None)?;
+    let note = lib::Note::new(lib::NoteType::Today(lib::Date::now().from(&when)?));
+    let note_file = lib::note_for_date(&notes_dir, &note, None)?;
     run_editor(&config, &note_file)
 }
 
 fn run_yesterday() -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
-    let day = lib::Date::now().from("yesterday")?;
-    let note_file = lib::note_for_date(notes_dir, day, None)?;
+    let note = lib::Note::new(lib::NoteType::Today(lib::Date::now().from("yesterday")?));
+    let note_file = lib::note_for_date(&notes_dir, &note, None)?;
     run_editor(&config, &note_file)
 }
 
-fn run_idea(topic: &str) -> anyhow::Result<()> {
+fn run_idea(topic: String) -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
-    let note_file = lib::note_for_topic(notes_dir, lib::NoteKind::Idea, topic)?;
+    let note = lib::Note::new(lib::NoteType::Idea(topic.to_string()));
+    let note_file = lib::note_for_topic(&notes_dir, &note)?;
     run_editor(&config, &note_file)
 }
 
-fn run_todo(topic: &str) -> anyhow::Result<()> {
+fn run_todo(topic: String) -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
-    let note_file = lib::note_for_topic(notes_dir, lib::NoteKind::Todo, topic)?;
+    let note = lib::Note::new(lib::NoteType::Todo(topic.to_string()));
+    let note_file = lib::note_for_topic(&notes_dir, &note)?;
     run_editor(&config, &note_file)
 }
 
-fn run_plan(topic: Option<&str>) -> anyhow::Result<()> {
+fn run_plan(topic: Option<String>) -> anyhow::Result<()> {
     let (config, notes_dir) = init_user()?;
-    let kind = match topic {
-        Some(_) => lib::NoteKind::PlanTopic,
-        None => lib::NoteKind::Plan,
+    let note = lib::Note::new(lib::NoteType::Plan(topic));
+    let note_file = lib::note_for_optional_topic(&notes_dir, &note)?;
+    run_editor(&config, &note_file)
+}
+
+fn run_pick(kind: Option<CliNoteKind>) -> anyhow::Result<()> {
+    let (config, notes_dir) = init_user()?;
+    let kind: Option<lib::NoteKind> = kind.map(|k| k.into());
+    let dir: Cow<'_, Path> = if let Some(kind) = kind {
+        Cow::Owned(notes_dir.kind_dir(kind))
+    } else {
+        Cow::Borrowed(&notes_dir)
     };
     
-    let note_file = lib::note_for_optional_topic(notes_dir, kind, topic)?;
-    run_editor(&config, &note_file)
+    if let Some(note_path) = run_picker(&config, &dir)? {
+        lib::Note::from_filepath(&notes_dir, &note_path)?;
+        run_editor(&config, &note_path)
+    } else {
+        println!("Cancelled.");
+        Ok(())
+    }
 }

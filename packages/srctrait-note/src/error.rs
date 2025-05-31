@@ -15,7 +15,9 @@ pub enum Error {
     #[error("Unable to parse date: {0}")]
     Date(String),
     #[error("No daily notes for: {}", .0.display(DateTimeFormat::YmdDash))]
-    NoDayNotes(Date)
+    NoDayNotes(Date),
+    #[error("{0}")]
+    InvalidNote(String)
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

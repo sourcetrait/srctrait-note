@@ -1,6 +1,6 @@
 [package]
 name = "srctrait-note-cli"
-version = "1.0.0"
+version = "1.1.0"
 description = "Markdown notes manager"
 authors = ["SourceTrait <development@sourcetrait.com>"]
 license = "AGPL-3.0-or-later"
@@ -18,9 +18,10 @@ path = "src/main.rs"
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 dirs = "6"
-srctrait-note = { version="1", path = "../srctrait-note" }
 shellexpand = "3"
 srctrait-common-chronox.workspace = true
+srctrait-note = { version = "1", path = "../srctrait-note" }
+tempfile = "3.20.0"
 
 [dev-dependencies]
 srctrait-common-testing.workspace = true
