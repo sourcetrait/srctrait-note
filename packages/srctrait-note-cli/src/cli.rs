@@ -2,6 +2,7 @@ pub(crate) mod style;
 
 use clap;
 use style::CARGO_STYLING;
+use crate::*;
 
 #[derive(Debug, clap::Parser)]
 #[clap(version,about)]
@@ -39,6 +40,10 @@ pub(crate) enum Command {
         /// Option plan topic
         topic: Option<String>,
     },
+    /// Opens a note using your preferred file picker
+    Pick {
+        kind: Option<CliNoteKind>,
+    },
     /// Edits the config for this command
     Config,
 }
@@ -58,4 +63,24 @@ pub(crate) enum TodaySubCommand {
         when: String
     }
 }
+
+#[derive(Debug, Clone, Copy, clap::ValueEnum)]
+pub(crate) enum CliNoteKind {
+    Today,
+    Idea,
+    Todo,
+    Plan
+}
+
+impl From<CliNoteKind> for lib::NoteKind {
+    fn from(value: CliNoteKind) -> Self {
+        match value {
+            CliNoteKind::Today => lib::NoteKind::Today,
+            CliNoteKind::Idea => lib::NoteKind::Idea,
+            CliNoteKind::Todo => lib::NoteKind::Todo,
+            CliNoteKind::Plan => lib::NoteKind::Plan,
+        }
+    }
+}
+
 

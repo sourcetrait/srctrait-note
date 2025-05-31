@@ -4,7 +4,7 @@ use srctrait_common_chronox::{DateDisplay, DateTimeFormat};
 use crate::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Date(NaiveDate);
+pub struct Date(pub NaiveDate);
 
 impl Date {
     pub fn now() -> Self {

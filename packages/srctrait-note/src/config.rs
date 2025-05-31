@@ -10,7 +10,7 @@ const EDITOR_CMD: &'static str ="$EDITOR";
 pub struct NoteConfig {
     /// should default to ~/Documents/notes equivalent on OS
     notes_dir: PathBuf,
-    editor: String
+    editor: String,
 }
 
 #[derive(Default, Debug, Clone, serde::Serialize, serde::Deserialize, builder::Builder)]
@@ -19,7 +19,7 @@ pub struct NoteConfigInput {
     /// defaults to ~/Documents/notes equivalent on OS
     notes_dir: Option<PathBuf>,
     /// defaults to $EDITOR
-    editor: Option<String>
+    editor: Option<String>,
 }
 
 impl NoteConfigInput {

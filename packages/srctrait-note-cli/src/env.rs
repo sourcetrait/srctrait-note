@@ -88,3 +88,50 @@ pub fn run_editor(config: &lib::NoteConfig, file: &Path) -> anyhow::Result<()> {
         Err(anyhow::anyhow!("Editor failure: {editor} :: {out}"))
     }
 }
+
+/// currently defaults to yazi for now
+pub fn run_picker(config: &lib::NoteConfig, dir: &Path) -> anyhow::Result<Option<PathBuf>> {
+    run_picker_yazi(config, dir)
+}
+
+pub fn run_picker_yazi(_config: &lib::NoteConfig, dir: &Path) -> anyhow::Result<Option<PathBuf>> {
+    let tempfile = tempfile::NamedTempFile::new()
+        .with_context(|| "Unable to create tempfile")?;
+    let tempfile_path = tempfile.path();
+    
+    let output = Command::new("yazi")
+        .arg(dir)
+        .arg("--chooser-file").arg(tempfile_path)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .output()
+        .with_context(|| format!("{}\n{}\n{}",
+            "Unable to run the `yazi` file picker.",
+            "You may need to install `yazi`:",
+            "    https://yazi-rs.github.io/docs/installation"))?;
+
+    if output.status.success() {
+        let s = fs::read_to_string(tempfile_path)
+            .with_context(|| "Unable to read file picker results from tmp file")?
+            .trim().to_string();
+        
+        if s.is_empty() {
+            Ok(None)
+        } else {
+            let note_path = PathBuf::from(s);
+            if note_path.is_file() {
+                Ok(Some(note_path))
+            } else {
+                Err(anyhow::anyhow!("Invalid filepath picked: {}", note_path.display()))
+            }
+        }
+    } else {
+        let out = format!("{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+
+        Err(anyhow::anyhow!("Picker failure: yazi :: {out}"))
+    }
+}
