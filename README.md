@@ -39,7 +39,7 @@ With Rust install, run:
 `cargo install srctrait-note-cli`
 
 The standalone command's default name is **srctrait-note**. It's recommended
-to make an alias to something like *note* for easy of use.
+to make an alias to something like *note* for ease of use.
 
 In Fish, this would be something like:
 ```bash
