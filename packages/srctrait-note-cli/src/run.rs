@@ -1,5 +1,6 @@
 use std::{borrow::Cow, fs, path::Path, process::ExitCode};
 use clap::Parser;
+use srctrait_common_clapx::styl::srctrait::*;
 use crate::*;
 
 pub fn run() -> ExitCode {
@@ -9,7 +10,7 @@ pub fn run() -> ExitCode {
             let source = e.source()
                 .map_or(String::new(), |s| format!("\n       {s}"));
 
-            eprintln!("{ERROR}error:{ERROR:#} {e}{source}");
+            eprintln!("{STYL_ERROR}error:{STYL_ERROR:#} {e}{source}");
             ExitCode::FAILURE
         }
     }

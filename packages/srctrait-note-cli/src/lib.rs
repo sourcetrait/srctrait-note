@@ -7,6 +7,6 @@ mod run;
 
 pub use run::run;
 
-pub(crate) use self::{env::*, cli::{*, style::*}};
+pub(crate) use self::{env::*, cli::*};
 pub(crate) use srctrait_note as lib;
 pub(crate) use anyhow::Context;

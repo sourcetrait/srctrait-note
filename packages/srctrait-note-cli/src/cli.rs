@@ -1,12 +1,10 @@
-pub(crate) mod style;
-
 use clap;
-use style::CARGO_STYLING;
+use srctrait_common_clapx as clapx;
 use crate::*;
 
 #[derive(Debug, clap::Parser)]
 #[clap(version,about)]
-#[clap(styles = CARGO_STYLING)]
+#[clap(styles = clapx::CLAP_STYLE_SRCTRAIT)]
 pub(crate) struct Cli {
     #[clap(subcommand)]
     pub(crate) command: Command,

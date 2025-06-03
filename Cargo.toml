@@ -8,3 +8,4 @@ members = [
 [workspace.dependencies]
 srctrait-common-testing = "4"
 srctrait-common-chronox = "1"
+srctrait-common-clapx = "1"
