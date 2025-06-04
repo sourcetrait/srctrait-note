@@ -1,6 +1,5 @@
 use chrono::{Duration, Local, NaiveDate};
-use com::chrono::DateRelativeParsing;
-use srctrait_common_chronox::{DateDisplay, DateTimeFormat};
+use chronox::{DateRelativeParsing, DateDisplay, DateTimeFormat};
 use crate::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

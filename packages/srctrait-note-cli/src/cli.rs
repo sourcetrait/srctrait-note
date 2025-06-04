@@ -42,8 +42,8 @@ pub(crate) enum Command {
     Pick {
         kind: Option<CliNoteKind>,
     },
-    /// Edits the config for this command
-    Config,
+    #[clap(subcommand)]
+    Cli(clapx::subcmd::cli::CliCommand)
 }
 
 #[derive(Debug, clap::Parser)]

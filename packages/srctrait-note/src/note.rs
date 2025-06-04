@@ -16,7 +16,9 @@ pub fn note_for_date(notes_dir: &NotesDir, note: &Note, from: Option<Date>) -> R
             .join(from_date.display(DateTimeFormat::YmSlash).to_string());
 
         let from_file = from_note_dir
-            .join(format!("note-today-{}.md", from_date.display(DateTimeFormat::YmdDash).to_string()));
+            .join(format!("{}-{}.md",
+                note.kind(),
+                from_date.display(DateTimeFormat::YmdDash).to_string()));
 
         if !from_file.is_file() {
             return Err(Error::NoDayNotes(from_date));
@@ -51,7 +53,9 @@ pub fn note_for_date(notes_dir: &NotesDir, note: &Note, from: Option<Date>) -> R
     }
 
     let note_file = note_dir
-        .join(format!("today-{}.md", date.display(DateTimeFormat::YmdDash).to_string()));
+        .join(format!("{}-{}.md",
+            note.kind(),
+            date.display(DateTimeFormat::YmdDash).to_string()));
 
     if !note_file.is_file() {
         let vars = build_template_vars(date, None);
@@ -113,7 +117,7 @@ pub fn note_for_optional_topic(notes_dir: &NotesDir, note: &Note) -> Result<Path
             .map_err(|e| Error::Io(format!("Unable to create note directory: {}", note_dir.display()), e))?;
     }
 
-    let note_file = note_dir.join("plan.md");
+    let note_file = note_dir.join(format!("{}.md", note.kind()));
 
     if !note_file.is_file() {
         let date = Date::now();

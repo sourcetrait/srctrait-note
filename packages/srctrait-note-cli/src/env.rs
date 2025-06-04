@@ -1,15 +1,13 @@
 use std::{fs, path::{Path, PathBuf}, process::{Command, Stdio}};
-
-use crate::*;
 use dirs;
+use tomlx::FromToml;
+use crate::*;
 
 pub const ENV_VAR_SRCTRAIT_NOTES_DIR: &'static str = "SRCTRAIT_NOTES_DIR";
 pub const ENV_VAR_SRCTRAIT_CONFIG_DIR: &'static str = "SRCTRAIT_CONFIG_DIR";
-
-const HOME_CONFIG_DIR: &'static str = ".config";
-
 pub const NOTE_CONFIG_DIR: &'static str = "srctrait/note";
 pub const CONFIG_FILENAME: &'static str = "config.toml";
+const HOME_CONFIG_DIR: &'static str = ".config";
 
 pub(crate) fn user_config_dir() -> anyhow::Result<PathBuf> {
     if let Some(dir) = std::env::var_os(ENV_VAR_SRCTRAIT_CONFIG_DIR) {
@@ -35,7 +33,7 @@ pub(crate) fn note_config_file() -> anyhow::Result<PathBuf> {
 pub(crate) fn user_notes_config() -> anyhow::Result<lib::NoteConfig> {
     let note_config_file = note_config_file()?;
     let input = if note_config_file.is_file() {
-        lib::NoteConfigInput::from_toml(&note_config_file)?
+        lib::NoteConfigInput::from_toml_file(&note_config_file)?
     } else {
         lib::NoteConfigInput::default()
     };

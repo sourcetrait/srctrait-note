@@ -1,6 +1,9 @@
-use std::{borrow::Cow, fs, path::Path, process::ExitCode};
+use std::{borrow::Cow, path::Path, process::ExitCode};
 use clap::Parser;
-use srctrait_common_clapx::styl::srctrait::*;
+use clapx::styl::srctrait::*;
+use clapx::subcmd::cli::CliCommand;
+use srctrait_common_tomlx::starter::trim_starter_toml_file_comments;
+use tomlx::ToStarterToml;
 use crate::*;
 
 pub fn run() -> ExitCode {
@@ -19,7 +22,10 @@ pub fn run() -> ExitCode {
 fn run_cli() -> anyhow::Result<()> {
     let cli = Cli::parse();
     match cli.command {
-        Command::Config => run_config(),
+        Command::Cli(cmd) => match cmd {
+            CliCommand::Config(_cmd) => run_config(),
+            CliCommand::Alias(_cmd) => todo!(),
+        },
         Command::Today(cmd) => match &cmd.from {
             Some(TodaySubCommand::From{when}) => run_today_from(when),
             None => run_today()
@@ -46,26 +52,13 @@ fn run_config() -> anyhow::Result<()> {
     let first_run = !config_file.is_file();
 
     if first_run {
-        let content = config.to_toml()?
-            .lines()
-            .map(|l| format!("#{l}"))
-            .collect::<Vec<_>>()
-            .join("\n");
-
-        fs::write(&config_file, content)?;
+        config.to_starter_toml_file(&config_file, tomlx::starter::GENERIC_INTRO)?;
     }
 
     run_editor(&config, &config_file)?;
 
     if first_run {
-        let content = fs::read_to_string(&config_file)
-            .with_context(|| format!("Unable to read config file: {}", config_file.display()))?
-            .lines()
-            .filter(|l| !l.starts_with('#'))
-            .collect::<Vec<_>>()
-            .join("\n");
-
-        fs::write(config_file, content)?;
+        trim_starter_toml_file_comments(&config_file)?;
     }
 
     Ok(())

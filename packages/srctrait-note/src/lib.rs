@@ -15,6 +15,5 @@ pub mod template;
 
 pub use self::{config::*, date::*,  dir::*, error::*, kind::*, note::*, template::*};
 
-pub(crate) mod com {
-    pub(crate) use srctrait_common_chronox as chrono;
-}
+pub(crate) use srctrait_common_chronox as chronox;
+pub(crate) use srctrait_common_tomlx as tomlx;

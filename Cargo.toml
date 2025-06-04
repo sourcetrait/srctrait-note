@@ -9,3 +9,5 @@ members = [
 srctrait-common-testing = "4"
 srctrait-common-chronox = "1"
 srctrait-common-clapx = "1"
+srctrait-common-tomlx = "3"
+srctrait-note = { version="2", path = "packages/srctrait-note" }

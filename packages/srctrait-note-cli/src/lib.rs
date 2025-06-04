@@ -9,4 +9,6 @@ pub use run::run;
 
 pub(crate) use self::{env::*, cli::*};
 pub(crate) use srctrait_note as lib;
+pub(crate) use srctrait_common_clapx as clapx;
+pub(crate) use srctrait_common_tomlx as tomlx;
 pub(crate) use anyhow::Context;

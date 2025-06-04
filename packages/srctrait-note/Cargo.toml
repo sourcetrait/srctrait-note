@@ -1,7 +1,7 @@
 [package]
 name = "srctrait-note"
-version = "1.0.1"
-description = "Markdown notes manager"
+version = "2.0.0"
+description = "A very, very simple Markdown notes manager"
 authors = ["SourceTrait <development@sourcetrait.com>"]
 license = "AGPL-3.0-or-later"
 repository = "https://github.com/sourcetrait/srctrait-note"
@@ -12,6 +12,7 @@ edition = "2024"
 
 [dependencies]
 chrono = "0.4"
+convert_case = "0.8"
 derive_builder = "0.20"
 dirs = "6"
 serde = { version = "1", features = ["derive"] }
@@ -20,7 +21,7 @@ strum = { version = "0.27", features = ["derive"] }
 thiserror = "2"
 toml = "0.8"
 srctrait-common-chronox.workspace = true
-convert_case = "0.8"
+srctrait-common-tomlx.workspace = true
 
 [dev-dependencies]
 srctrait-common-testing.workspace = true
